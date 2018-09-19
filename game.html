@@ -1,0 +1,98 @@
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Brick Breaker</title>
+        <style>
+            .score
+            {
+                position: absolute;
+                top: 0px;
+                left: 260px;
+                font-family: Helvetica, sans-serif;
+                font-size: 60px;
+            }
+            .score #score
+            {
+                position: relative;
+                top: -40px;
+
+            }
+            .level {
+                position: absolute;
+                top: 350px;
+                left: 250px;
+                color: #FF7F00;
+				font-family: Helvetica, sans-serif;
+				font-size: 60px;
+				cursor: default;
+				display: none;
+            }
+
+			canvas {
+				position: absolute;
+				top: 100px;
+				left: 0px;
+				background: transparent;
+			}
+            .debug {
+                position: absolute;
+                top: 710px;
+                left: 0;
+            }
+            #debug-check {
+                position: relative;
+                left: 0px;
+            }
+            #debug {
+                position: relative;
+                left: 100px;
+            }
+            .game-over {
+				position: absolute;
+				top: 350px;
+				left: 250px;
+				color: #FF7F00;
+				font-family: Helvetica, sans-serif;
+				font-size: 60px;
+				cursor: default;
+				display: none;
+			}
+			.game-over span {
+				font-size: 40px;
+				cursor: pointer;
+				position: relative;
+				left: 100px;
+			}
+			.game-over span:hover {
+				color: #FFD700;
+			}
+        </style>
+        <script src="imageRepo.js"></script>
+        <script src="utils.js"></script>
+        <script src="vector.js"></script>
+        <script src="collision.js"></script>
+        <script src="userInput.js"></script>
+        <script src="gameObject.js"></script>
+        <script src="powerUp.js"></script>
+        <script src="brick.js"></script>
+        <script src="paddle.js"></script>
+        <script src="ball.js"></script>
+        <script src="gameTimer.js"></script>
+        <script src="main.js"></script>
+
+    </head>
+    <body>
+        <div class="score">
+            <p id="score">Score: 0</p>
+        </div>
+        <canvas id="canvas_main" width=800 height=600>
+            Your browser does not support canvas :(
+        </canvas>
+        <div class="level" id="level"></div>
+        <div class="game-over" id="game-over">GAME OVER<p><span onclick="game.restart()">Restart</span></p></div>
+        <div class="debug">
+            <input type="checkbox" id="debug-check" checked>Show Debug Info
+            <p id="debug"></p>
+        </div>
+    </body>
+</html>
