@@ -28,11 +28,11 @@ var imageRepository = new function()
     function imageLoaded()
     {
         numLoaded++;
-       // console.log(numLoaded + " images loaded\n");
+        console.log(numLoaded + " images loaded\n");
         if (numLoaded === numImages)
         {
-            this.allLoaded = true;
-            window.initGame();
+            imageRepository.allLoaded = true;
+            console.log("all loaded:" + imageRepository.allLoaded);
         }
     }
 

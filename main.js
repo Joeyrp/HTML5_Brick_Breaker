@@ -2,7 +2,7 @@
 *	File		-	main.js
 *	Author		-	Joey Pollack
 *	Date		-	2018/09/12 (y/m/d)
-*	Mod Date	-	2018/09/19 (y/m/d)
+*	Mod Date	-	2018/09/21 (y/m/d)
 *	Description	-	The main file for the game. Contains the main loop and 
 *                   handles game objects and general game logic.
 *
@@ -10,13 +10,18 @@
 
 // Requires all other .js files...
 
-
 var game = new Game();
 function initGame()
 {
-    game.init();
-
-    GameLoop(0);
+    if (!imageRepository.allLoaded)
+    {
+        setTimeout(initGame, 500);
+    }
+    else
+    {
+        game.init();
+        GameLoop(0);
+    }
 }
 
 
