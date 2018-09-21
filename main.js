@@ -70,6 +70,7 @@ function Game()
 
         this.spawnBricks();
 
+        this.powerUps = [];
 
        // this.levelDispTimer = new GameTimer();
         this.timer = new GameTimer();
@@ -286,6 +287,11 @@ function Game()
             // Spawn more bricks
             this.catchBall();
             this.spawnBricks();
+
+            this.ball.alwaysBreak = false;
+            this.ball.alwaysCatch = false;
+
+            this.powerUps = [];
         }
 
         // powerups
