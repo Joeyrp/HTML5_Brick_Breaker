@@ -2,7 +2,7 @@
 *	File		-	main.js
 *	Author		-	Joey Pollack
 *	Date		-	2018/09/12 (y/m/d)
-*	Mod Date	-	2018/09/21 (y/m/d)
+*	Mod Date	-	2018/10/05 (y/m/d)
 *	Description	-	The main file for the game. Contains the main loop and 
 *                   handles game objects and general game logic.
 *
@@ -15,11 +15,13 @@ function initGame()
 {
     if (!imageRepository.allLoaded)
     {
+        console.log("MAIN: Images NOT loaded \n");
         setTimeout(initGame, 500);
     }
     else
     {
         game.init();
+        console.log("MAIN: Images loaded!!");
         GameLoop(0);
     }
 }
@@ -34,6 +36,7 @@ function Game()
     this.levelDispTimer = null;
 
     this.playerScore = 0;
+    this.playerLives = 3;
     this.level = 0;
     this.gameOver = false;
     this.pause = false;
@@ -67,9 +70,12 @@ function Game()
         this.paddle = new Paddle(this.ball);
         this.paddle.setPos(325, 550);
         this.paddle.setSize(150, 15);
+        
+        this.catchBall(true);
 
         this.spawnBricks();
 
+        this.powerUps = [];
 
        // this.levelDispTimer = new GameTimer();
         this.timer = new GameTimer();
@@ -186,15 +192,18 @@ function Game()
         }
     }
 
-    this.catchBall = function()
+    this.catchBall = function(center)
     {
         this.ball.isCaught = true;
 
         // attach the ball to the center of the paddle
-        this.ball.collider.x = this.paddle.collider.x + this.paddle.collider.width / 2
-        this.ball.collider.x -= this.ball.collider.width / 2;
-
-        this.ball.collider.y = this.paddle.collider.y - (this.ball.collider.height + 1);
+        if (center === true)
+        {
+            this.ball.collider.x = this.paddle.collider.x + this.paddle.collider.width / 2
+            this.ball.collider.x -= this.ball.collider.width / 2;
+    
+            this.ball.collider.y = this.paddle.collider.y - (this.ball.collider.height + 1);
+        }
     }
 
     // newTime is a timestamp in milliseconds
@@ -246,18 +255,37 @@ function Game()
 
     this.updateGameObjects = function(deltaT)
     {
-        this.paddle.update(deltaT);
-        this.ball.update(deltaT);
+        if (this.ball.isCaught)
+        {
+            deltaX = this.paddle.collider.x;
+            this.paddle.update();
+            deltaX = deltaX - this.paddle.collider.x;
+            this.ball.collider.x -= deltaX;
+        }
+        else
+        {
+            this.paddle.update(deltaT);
+            this.ball.update(deltaT);
+        }
 
         if (this.ball.hitGround)
         {
-            this.gameOver = true;
-            document.getElementById("game-over").style.display = "block";
+            if (this.playerLives > 0)
+            {
+                this.playerLives -= 1;
+                this.catchBall(true);
+                this.ball.hitGround = false;
+            }
+            else
+            {
+                this.gameOver = true;
+                document.getElementById("game-over").style.display = "block";
+            }
         }
 
         if (this.ball.isCaught)
         {
-           this.catchBall();
+           this.catchBall(false);
 
             // detach when space is pressed
             if (KEY_STATUS[KEY_SPACE])
@@ -283,9 +311,19 @@ function Game()
             this.playerScore += Math.trunc(1000 * Math.pow(this.level, 1.5) + 1000);
             this.level++;
 
+            // Cancel some powerups
+            this.ball.alwaysBreak = false;
+            this.ball.alwaysCatch = false;
+            this.powerUps = [];
+
             // Spawn more bricks
-            this.catchBall();
+            this.catchBall(true);
             this.spawnBricks();
+
+            this.ball.alwaysCatch = false;
+            this.ball.alwaysBreak = false;
+            
+            this.powerUps = [];
         }
 
         // powerups
@@ -411,7 +449,8 @@ function GameLoop(newTime)
     game.renderObjects();
 
     // UI
-    document.getElementById("score").innerHTML = "Score: " + game.playerScore;
+    document.getElementById("score").innerHTML = game.playerScore;
+    document.getElementById("lives").innerHTML = game.playerLives;
     
     //request callback at next frame
     requestAnimFrame(GameLoop);
